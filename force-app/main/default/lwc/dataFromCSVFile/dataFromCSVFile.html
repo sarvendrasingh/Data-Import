@@ -1,0 +1,81 @@
+<template>
+
+
+    <lightning-card icon-name="custom:custom19" title='CSV File Read'>
+        <div style="margin-left: 1%; margin-right: 1%">
+        <lightning-combobox name="sObject" label="Object" value={value} placeholder="Select Object" options={objectList}
+            onchange={handleChange}></lightning-combobox>
+        </div>
+        <br />
+
+        <div style="margin-left: 3%" if:true={showUploader}>
+            <lightning-file-upload accept={acceptedCSVFormats} label="Attach receipt" multiple="multiple"
+                onuploadfinished={uploadFileHandler} record-id={recordId}></lightning-file-upload>
+        </div>
+
+
+        <div if:true={error}>
+            {error}
+        </div>
+
+        <!-- if:true={FieldOptions} -->
+        <lightning-card if:true={sheetUploaded}>
+            <div style="margin-left: 1.25%;">
+                <h1>
+                    SELECT THE FIELDS TO MAP IN SAME ORDER AS FETCHED FROM UPLOADED FILE.
+                </h1>
+            </div>
+            
+            <lightning-layout>
+                <!-- <lightning-layout-item>
+                    <table>
+                        <tr>
+                            <th>Fetched Fields From CSV</th>
+                        </tr>
+                        <template for:each={columnsObject} for:item="field">
+                            <tr key={field.fieldName}>
+                                <td>{field.label}</td>                             
+                            </tr>
+                        </template>
+                    </table>
+                </lightning-layout-item> -->
+                <lightning-layout-item flexibility="auto, no-grow" padding="around-small">
+                    <div style="width: 320px;">
+                        <lightning-vertical-navigation>
+                            <lightning-vertical-navigation-section label="Fetched Fields From CSV">
+                                <template for:each={columnsObject} for:item="field">
+                                    <lightning-vertical-navigation-item key={field.fieldName} label={field.label}>
+                                    </lightning-vertical-navigation-item>
+                                </template>
+                            </lightning-vertical-navigation-section>
+                        </lightning-vertical-navigation>
+                    </div>
+                    <!-- <ol class="slds-m-around_medium">
+                        <b>Fetched Fields From CSV</b>
+                        <br/>   
+                        <template for:each={columnsObject} for:item="field">
+                            <li key={field.fieldName}>
+                                {field.label}
+                            </li>
+                        </template>
+                    </ol> -->
+                </lightning-layout-item>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-dual-listbox name="Fields" label="Select Fields" source-label="All Fields"
+                        selected-label="Selected" field-level-help="Select fields to import data"
+                        value={_selectedFields} options={FieldOptions} onchange={handleFieldChange}>
+                    </lightning-dual-listbox>
+                    <br />
+                    <lightning-button variant="success" label="Upload" title="Successful action"
+                        onclick={handleUploadButton} class="slds-m-left_x-small"></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-card>
+        <br />
+        <div if:true={dataAvailable} style="margin-left: 1%; margin-right: 1%">
+            <lightning-datatable columns={columnsObject} data={data} hide-checkbox-column="true" key-field="id">
+            </lightning-datatable>
+        </div>
+
+    </lightning-card>
+</template>
